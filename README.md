@@ -1,129 +1,197 @@
-# Dokumentasi Script Serangan DDoS & Bypass WAF
+<!-- Markdown modern style with sections, colors, and highlights -->
 
-## Deskripsi Umum
-Script ini adalah alat pengujian keamanan yang mencakup berbagai teknik serangan untuk menguji ketahanan web server dan WAF (Web Application Firewall). Fitur utamanya meliputi **brute force proxy**, **bypass WAF**, serta serangan multi-vector berupa **TCP flood** dan **UDP flood**.
-
-## Fitur Utama
-1. **Proxy Brute Force**  
-   Menggunakan daftar proxy acak untuk menguji validitas koneksi ke target.
-
-2. **Bypass WAF**  
-   Payload dienkode dengan metode Base64 untuk menghindari filter WAF.
-
-3. **Multi-vector Attack**  
-   - **TCP Flood**: Membanjiri server dengan koneksi TCP socket.  
-   - **UDP Flood**: Mengirimkan paket UDP dummy secara berulang.
-
-4. **Logging**  
-   Semua aktivitas serangan dicatat secara otomatis dalam file log.
+# 🚀 **Dokumentasi Script Serangan DDoS & Bypass WAF**
 
 ---
 
-## Struktur Fungsi
-
-### 1. `start_attack(target_url)`
-- Fungsi utama untuk mengatur serangan.  
-- Langkah-langkah:  
-   1. Mengambil hostname dari URL target.  
-   2. Melakukan bypass WAF hingga berhasil.  
-   3. Menjalankan brute force proxy untuk mencari proxy valid.  
-   4. Melakukan serangan **TCP Flood** dan **UDP Flood** menggunakan **ThreadPoolExecutor**.
+## **📌 Deskripsi Umum**
+Script ini adalah **alat pengujian keamanan** untuk mengevaluasi ketahanan **Web Server** dan **Web Application Firewall (WAF)**. Script ini mencakup berbagai teknik serangan seperti **proxy brute force**, **WAF bypass**, dan serangan **multi-vector** menggunakan **TCP Flood** dan **UDP Flood**.
 
 ---
 
-### 2. `generate_proxy()`
-- Membuat proxy acak dalam format `IP:Port`.  
-- Menghasilkan IP acak dan port antara `1080` hingga `65535`.
+## 🔥 **Fitur Utama**
+
+| **Fitur**             | **Deskripsi**                                                                               |
+|------------------------|--------------------------------------------------------------------------------------------|
+| **Proxy Brute Force**  | Menggunakan daftar proxy acak untuk menguji validitas koneksi ke target.                   |
+| **Bypass WAF**         | Menghindari filter WAF dengan payload yang dienkode dalam format **Base64**.               |
+| **TCP Flood Attack**   | Membanjiri server target dengan koneksi **TCP Socket** secara terus-menerus.               |
+| **UDP Flood Attack**   | Mengirimkan **paket UDP dummy** ke server target dalam jumlah besar.                      |
+| **Logging Otomatis**   | Aktivitas serangan dicatat secara otomatis dalam file **log** untuk dianalisis lebih lanjut.|
 
 ---
 
-### 3. `test_proxy(proxy, target_url, log_file)`
-- Menguji apakah proxy dapat mengakses target URL.  
-- Log hasil proxy (valid atau tidak) ke dalam file log.
+## 🛠️ **Struktur Fungsi**
+
+### 1️⃣ **`start_attack(target_url)`**
+Fungsi utama untuk mengatur semua serangan:
+1. Mengambil **hostname** dari URL target.
+2. Melakukan **bypass WAF**.
+3. Menguji validitas **proxy** dengan brute force.
+4. Menjalankan serangan **TCP Flood** dan **UDP Flood** secara paralel.
 
 ---
 
-### 4. `attempt_bypass_waf(target_url, log_file)`
-- Mencoba bypass WAF dengan mengirimkan payload dienkode Base64.  
-- Berulang hingga bypass berhasil.
+### 2️⃣ **`generate_proxy()`**
+Membangkitkan proxy dalam format acak **IP:Port**.  
+Contoh output:  
+```plaintext
+192.168.1.10:8080
 
-**Helper Function:**
-- `generate_encoded_payload(payload)`  
-  Mengekode payload menjadi format Base64.  
-- `test_waf_bypass(target_url, payload, log_file)`  
-  Mengirimkan payload ke server untuk menguji bypass.
 
 ---
 
-### 5. `tcp_flood(target_ip, target_port, log_file)`
-- Membuat koneksi TCP ke target IP dan port.  
-- Mengirimkan paket HTTP dummy melalui socket.
+3️⃣ test_proxy(proxy, target_url, log_file)
+
+Menguji apakah proxy valid untuk target URL.
+
+Menyimpan hasil ke dalam file log.
+
+
 
 ---
 
-### 6. `udp_flood(target_ip, target_port, log_file)`
-- Mengirimkan paket UDP dummy ke target IP dan port secara terus-menerus.
+4️⃣ attempt_bypass_waf(target_url, log_file)
+
+Melakukan bypass WAF dengan mengirimkan payload Base64.
+🔧 Helper Functions:
+
+generate_encoded_payload(payload) - Konversi payload ke Base64.
+
+test_waf_bypass() - Uji respons WAF.
+
+
 
 ---
 
-### 7. `brute_force_proxy(proxy_list, target_url, log_file)`
-- Menggunakan **ThreadPoolExecutor** untuk menguji banyak proxy secara paralel.
+5️⃣ tcp_flood(target_ip, target_port, log_file)
+
+Membanjiri target menggunakan koneksi TCP Socket.
+Log aktivitas disimpan secara real-time.
+
 
 ---
 
-### 8. `create_log_file()`
-- Membuat direktori `logs` (jika belum ada).  
-- Menghasilkan file log dengan format nama file berdasarkan **timestamp**.
+6️⃣ udp_flood(target_ip, target_port, log_file)
+
+Mengirimkan paket UDP dummy ke IP dan port target.
+
 
 ---
 
-## Eksekusi Script
+7️⃣ brute_force_proxy(proxy_list, target_url, log_file)
 
-### Input
-Pengguna akan diminta untuk memasukkan URL target, contoh:
+Menggunakan ThreadPoolExecutor untuk menguji banyak proxy secara bersamaan.
 
-Masukkan URL target (misalnya http://example.com):
-
-### Output
-- Log hasil serangan disimpan di direktori **logs/**.  
-- Aktivitas serangan ditampilkan dalam terminal saat script berjalan.
 
 ---
 
-## Struktur Direktori
+8️⃣ create_log_file()
 
-|-- main.py                 # Script utama |-- logs/                   # Direktori penyimpanan file log |-- ddos_attack_<timestamp>.log  # Log aktivitas serangan
+Membuat file log baru di direktori logs/ dengan format:
+
+ddos_attack_<timestamp>.log
+
 
 ---
 
-## Catatan Keamanan
-- Script ini dibuat untuk **pengujian keamanan** dan **tujuan edukasi**.  
-- **Penggunaan script untuk menyerang sistem tanpa izin** melanggar hukum dan etika.  
-- Pengguna bertanggung jawab penuh atas penyalahgunaan script ini.
+📂 Struktur Direktori
+
+|-- main.py                   # Script utama
+|-- logs/                     # Direktori untuk menyimpan log serangan
+    |-- ddos_attack_20240607.log
+
 
 ---
 
-## Teknologi yang Digunakan
-- **Python 3.11**  
-- Library utama:  
-  - `socket`  
-  - `requests`  
-  - `base64`  
-  - `threading`  
-  - `concurrent.futures`  
+🚨 Eksekusi Script
+
+Input:
+
+Pengguna diminta memasukkan URL target:
+
+Masukkan URL target (contoh: http://example.com):
+
+Output:
+
+Aktivitas serangan ditampilkan di terminal secara real-time.
+
+Semua log disimpan di direktori logs/.
+
+
 
 ---
 
-## Cara Menjalankan Script
-1. Pastikan Python sudah diinstal di sistem.  
-2. Simpan script sebagai `main.py`.  
-3. Jalankan script menggunakan terminal:  
-   ```bash
-   python3 main.py
+💻 Cara Menjalankan Script
 
-4. Masukkan URL target saat diminta.
+1. Persyaratan Sistem:
 
+Python versi 3.9+.
+
+Library tambahan: requests, socket.
 
 
 
+2. Langkah Eksekusi:
+
+python3 main.py
+
+
+3. Hasil:
+File log akan disimpan di logs/.
+
+
+
+
+---
+
+⚠️ Catatan Penting
+
+Script ini hanya untuk tujuan edukasi dan pengujian keamanan.
+
+Dilarang keras menggunakan script ini untuk aktivitas ilegal.
+
+Semua tanggung jawab penggunaan ada pada pengguna.
+
+
+
+---
+
+🛡️ Lisensi
+
+Script ini dirilis di bawah lisensi MIT dan hanya untuk keperluan legal.
+
+
+---
+
+🎯 Teknologi yang Digunakan
+
+Python 3.11
+
+Library Utama:
+
+socket
+
+requests
+
+base64
+
+threading
+
+concurrent.futures
+
+
+
+
+---
+
+📊 Contoh Log Output
+```cmd
+
+[2024-06-07 12:00:00] Proxy 192.168.1.10:8080 - VALID
+[2024-06-07 12:01:00] WAF Bypass - SUCCESS
+[2024-06-07 12:02:00] TCP Flood Attack Started on 203.0.113.1:80
+[2024-06-07 12:03:00] UDP Flood Attack Started on 203.0.113.1:80
+
+```
 ---
