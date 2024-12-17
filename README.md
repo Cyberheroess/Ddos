@@ -37,8 +37,7 @@ Membangkitkan proxy dalam format acak **IP:Port**.
 Contoh output:  
 ```plaintext
 192.168.1.10:8080
-
-
+```
 ---
 
 3️⃣ test_proxy(proxy, target_url, log_file)
